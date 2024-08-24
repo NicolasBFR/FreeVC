@@ -7,3 +7,4 @@ hifigan/generator_v1
 vctk_raw
 .idea
 *.pt
+*_test.py
