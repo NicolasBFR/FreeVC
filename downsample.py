@@ -20,7 +20,7 @@ def yield_wavs(zip_path: zipfile.Path):
             ),
             zip_path.iterdir(),
     ):
-        res += list(f.iterdir())
+        res += list(filter(lambda el: "_mic2" in el.name, f.iterdir()))
     return res
 
 
