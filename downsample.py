@@ -1,55 +1,65 @@
+import io
 import os
 import argparse
+from pathlib import Path
+
 import librosa
 import numpy as np
-from multiprocessing import Pool, cpu_count
+from multiprocessing import cpu_count
+from concurrent.futures import ThreadPoolExecutor
 from scipy.io import wavfile
 from tqdm import tqdm
+import zipfile
 
 
-def process(wav_name):
+def yield_wavs(zip_file: zipfile.ZipFile):
+    zip_path = zipfile.Path(zip_file, at="VCTK-Corpus/wav48/")
+    res = []
+    for f in filter(
+            lambda x: all(
+                substring not in x.name for substring in ["s5", "p280", "p315"]
+            ),
+            zip_path.iterdir(),
+    ):
+        res += list(f.iterdir())
+    return res
+
+
+def process(wav_path: zipfile.Path):
+    wav_name = wav_path.name
     # speaker 's5', 'p280', 'p315' are excluded,
     speaker = wav_name[:4]
-    wav_path = os.path.join(args.in_dir, speaker, wav_name)
-    if os.path.exists(wav_path) and '_mic2.flac' in wav_path:
-        os.makedirs(os.path.join(args.out_dir1, speaker), exist_ok=True)
-        os.makedirs(os.path.join(args.out_dir2, speaker), exist_ok=True)
-        wav, sr = librosa.load(wav_path)
-        wav, _ = librosa.effects.trim(wav, top_db=20)
-        peak = np.abs(wav).max()
-        if peak > 1.0:
-            wav = 0.98 * wav / peak
-        wav1 = librosa.resample(wav, orig_sr=sr, target_sr=args.sr1)
-        # wav2 = librosa.resample(wav, orig_sr=sr, target_sr=args.sr2)
-        save_name = wav_name.replace("_mic2.flac", ".wav")
-        save_path1 = os.path.join(args.out_dir1, speaker, save_name)
-        # save_path2 = os.path.join(args.out_dir2, speaker, save_name)
-        wavfile.write(
-            save_path1,
-            args.sr1,
-            (wav1 * np.iinfo(np.int16).max).astype(np.int16)
-        )
-        # wavfile.write(
-        #     save_path2,
-        #     args.sr2,
-        #     (wav2 * np.iinfo(np.int16).max).astype(np.int16)
-        # )
+    # wav_path = os.path.join(args.in_dir, speaker, wav_name)
+    wav, sr = librosa.load(wav_path.open(mode='rb'))
+    wav, _ = librosa.effects.trim(wav, top_db=20)
+    peak = np.abs(wav).max()
+    if peak > 1.0:
+        wav = 0.98 * wav / peak
+    wav = librosa.resample(wav, orig_sr=sr, target_sr=args.sr)
+    save_name = wav_name.replace("_mic2.flac", ".wav")
+    save_path = os.path.join(args.out_dir, speaker, save_name)
+    wavfile.write(
+        save_path,
+        args.sr,
+        (wav * np.iinfo(np.int16).max).astype(np.int16)
+    )
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sr1", type=int, default=16000, help="sampling rate")
-    parser.add_argument("--sr2", type=int, default=22050, help="sampling rate")
-    parser.add_argument("--in_dir", type=str, default="/home/Datasets/lijingyi/data/vctk/wav48_silence_trimmed/", help="path to source dir")
-    parser.add_argument("--out_dir1", type=str, default="./dataset/vctk-16k", help="path to target dir")
-    parser.add_argument("--out_dir2", type=str, default="./dataset/vctk-22k", help="path to target dir")
+    parser.add_argument("--sr", type=int, default=16000, help="sampling rate")
+    parser.add_argument("--in_zip", type=Path, default="VCTK-Corpus.zip", help="path to source archive")
+    parser.add_argument('--num_workers', type=int, default=6)
+    parser.add_argument("--out_dir", type=Path, default="./dataset/vctk-16k", help="path to target dir")
     args = parser.parse_args()
 
-    pool = Pool(processes=cpu_count()-2)
+    args.out_dir.mkdir(exist_ok=True, parents=True)
 
-    for speaker in os.listdir(args.in_dir):
-        spk_dir = os.path.join(args.in_dir, speaker)
-        if os.path.isdir(spk_dir):
-            for _ in tqdm(pool.imap_unordered(process, os.listdir(spk_dir))):
-                pass
+    with zipfile.ZipFile(args.in_zip) as z:
+        for e in zipfile.Path(z, at="VCTK-Corpus/wav48/").iterdir():
+            (args.out_dir / e.name).mkdir(exist_ok=True)
 
+        files = yield_wavs(z)
+        process(files[0])
+        # with ThreadPoolExecutor(args.num_workers) as executor:
+        #     executor.map(process, files)
