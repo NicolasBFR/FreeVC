@@ -50,7 +50,6 @@ python3 convert.py --hpfile configs/freevc.json --ptfile checkpoints/freevc.pth 
 
 ```python
 python3 downsample.py --in_dir </path/to/VCTK/wavs>
-ln -s dataset/vctk-16k DUMMY
 
 # run this if you want a different train-val-test split
 python3 preprocess_flist.py
