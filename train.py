@@ -11,7 +11,6 @@ import torch.multiprocessing as mp
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.cuda.amp import autocast, GradScaler
-from torch.utils.tensorboard import SummaryWriter
 
 import commons
 import utils
@@ -55,8 +54,6 @@ def run(rank, n_gpus, hps):
     logger = utils.get_logger(hps.model_dir)
     logger.info(hps)
     utils.check_git_hash(hps.model_dir)
-    writer = SummaryWriter(log_dir=hps.model_dir)
-    writer_eval = SummaryWriter(log_dir=os.path.join(hps.model_dir, "eval"))
 
   dist.init_process_group(backend='nccl', init_method='env://', world_size=n_gpus, rank=rank)
   torch.manual_seed(hps.train.seed)
@@ -112,21 +109,19 @@ def run(rank, n_gpus, hps):
 
   for epoch in range(epoch_str, hps.train.epochs + 1):
     if rank==0:
-      train_and_evaluate(rank, epoch, hps, [net_g, net_d], [optim_g, optim_d], [scheduler_g, scheduler_d], scaler, [train_loader, eval_loader], logger, [writer, writer_eval])
+      train_and_evaluate(rank, epoch, hps, [net_g, net_d], [optim_g, optim_d], [scheduler_g, scheduler_d], scaler, [train_loader, eval_loader], logger)
     else:
-      train_and_evaluate(rank, epoch, hps, [net_g, net_d], [optim_g, optim_d], [scheduler_g, scheduler_d], scaler, [train_loader, None], None, None)
+      train_and_evaluate(rank, epoch, hps, [net_g, net_d], [optim_g, optim_d], [scheduler_g, scheduler_d], scaler, [train_loader, None], None)
     scheduler_g.step()
     scheduler_d.step()
 
 
-def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loaders, logger, writers):
+def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loaders, logger):
   
   net_g, net_d = nets
   optim_g, optim_d = optims
   scheduler_g, scheduler_d = schedulers
   train_loader, eval_loader = loaders
-  if writers is not None:
-    writer, writer_eval = writers
 
   train_loader.batch_sampler.set_epoch(epoch)
   global global_step
@@ -214,14 +209,9 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
             "slice/mel_gen": utils.plot_spectrogram_to_numpy(y_hat_mel[0].data.cpu().numpy()), 
             "all/mel": utils.plot_spectrogram_to_numpy(mel[0].data.cpu().numpy()),
         }
-        utils.summarize(
-          writer=writer,
-          global_step=global_step, 
-          images=image_dict,
-          scalars=scalar_dict)
 
       if global_step % hps.train.eval_interval == 0:
-        evaluate(hps, net_g, eval_loader, writer_eval)
+        evaluate(hps, net_g, eval_loader)
         utils.save_checkpoint(net_g, optim_g, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, "G_{}.pth".format(global_step)))
         utils.save_checkpoint(net_d, optim_d, hps.train.learning_rate, epoch, os.path.join(hps.model_dir, "D_{}.pth".format(global_step)))
     global_step += 1
@@ -230,7 +220,7 @@ def train_and_evaluate(rank, epoch, hps, nets, optims, schedulers, scaler, loade
     logger.info('====> Epoch: {}'.format(epoch))
 
  
-def evaluate(hps, generator, eval_loader, writer_eval):
+def evaluate(hps, generator, eval_loader):
     generator.eval()
     with torch.no_grad():
       for batch_idx, items in enumerate(eval_loader):
@@ -270,13 +260,6 @@ def evaluate(hps, generator, eval_loader, writer_eval):
       "gen/audio": y_hat[0],
       "gt/audio": y[0]
     }
-    utils.summarize(
-      writer=writer_eval,
-      global_step=global_step, 
-      images=image_dict,
-      audios=audio_dict,
-      audio_sampling_rate=hps.data.sampling_rate
-    )
     generator.train()
 
                            
