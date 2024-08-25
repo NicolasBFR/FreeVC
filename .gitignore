@@ -9,3 +9,4 @@ vctk_raw
 *.pt
 *_test.py
 *.zip
+filelists/*
