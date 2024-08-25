@@ -8,7 +8,7 @@ from tqdm import tqdm
 from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor 
 from functools import partial
-import glob 
+import glob
 import argparse
 
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--in_dir', type=str, 
         default='dataset/vctk-16k/')
-    parser.add_argument('--num_workers', type=int, default=12)
+    parser.add_argument('--num_workers', type=int, default=cpu_count()-2)
     parser.add_argument('--out_dir_root', type=str, 
         default='dataset')
     parser.add_argument('--spk_encoder_ckpt', type=str, \
@@ -54,8 +54,7 @@ if __name__ == "__main__":
 
     sub_folder_list = os.listdir(args.in_dir)
     sub_folder_list.sort()
-    
-    args.num_workers = args.num_workers if args.num_workers is not None else cpu_count()
+
     print("Number of workers: ", args.num_workers)
     ckpt_step = os.path.basename(args.spk_encoder_ckpt).split('.')[0].split('_')[-1]
     spk_embed_out_dir = os.path.join(args.out_dir_root, "spk")
@@ -71,11 +70,6 @@ if __name__ == "__main__":
             continue
         #out_dir = os.path.join(args.out_dir, spk)
         preprocess(in_dir, spk_embed_out_dir, spk, args.spk_encoder_ckpt, args.num_workers)
-    '''
-    for data_split in split_list:
-        in_dir = os.path.join(args.in_dir, data_split)
-        preprocess(in_dir, spk_embed_out_dir, args.spk_encoder_ckpt, args.num_workers)
-    '''
 
     print("DONE!")
     sys.exit(0)
