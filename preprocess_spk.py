@@ -49,29 +49,17 @@ if __name__ == "__main__":
         default='speaker_encoder/ckpt/pretrained_bak_5805000.pt')
 
     args = parser.parse_args()
-    
-    #split_list = ['train-clean-100', 'train-clean-360']
 
     sub_folder_list = os.listdir(args.in_dir)
-    sub_folder_list.sort()
 
-    print("Number of workers: ", args.num_workers)
-    ckpt_step = os.path.basename(args.spk_encoder_ckpt).split('.')[0].split('_')[-1]
     spk_embed_out_dir = os.path.join(args.out_dir_root, "spk")
-    print("[INFO] spk_embed_out_dir: ", spk_embed_out_dir)
     os.makedirs(spk_embed_out_dir, exist_ok=True)
 
-    #for data_split in split_list:
-    #    sub_folder_list = os.listdir(args.in_dir, data_split) 
     for spk in sub_folder_list:
         print("Preprocessing {} ...".format(spk))
         in_dir = os.path.join(args.in_dir, spk)
         if not os.path.isdir(in_dir): 
             continue
-        #out_dir = os.path.join(args.out_dir, spk)
         preprocess(in_dir, spk_embed_out_dir, spk, args.spk_encoder_ckpt, args.num_workers)
-
-    print("DONE!")
-    sys.exit(0)
 
 
