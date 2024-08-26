@@ -3,7 +3,7 @@ wget -nc --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=down
 wait;
 rm -rf /tmp/cookies.txt;
 python3 downsample.py --in_zip dataset.zip;
-rm dataset.zip;
+#rm dataset.zip;
 python3 preprocess_flist.py;
 python3 preprocess_spk.py;
 python3 preprocess_ssl.py;
