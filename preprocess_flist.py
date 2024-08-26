@@ -8,15 +8,15 @@ from random import shuffle
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--train_list", type=str, default="./filelists/train.txt", help="path to train list")
-    parser.add_argument("--val_list", type=str, default="./filelists/val.txt", help="path to val list")
-    parser.add_argument("--test_list", type=str, default="./filelists/test.txt", help="path to test list")
+    parser.add_argument("--train_list", type=Path, default="./filelists/train.txt", help="path to train list")
+    parser.add_argument("--val_list", type=Path, default="./filelists/val.txt", help="path to val list")
+    parser.add_argument("--test_list", type=Path, default="./filelists/test.txt", help="path to test list")
     parser.add_argument("--source_dir", type=Path, default="./dataset/vctk-16k", help="path to source dir")
     args = parser.parse_args()
 
-    idx = 0
-
-    args.source_dir: Path = args.source_dir
+    args.train_list.parent.mkdir(exist_ok=True, parents=True)
+    args.val_list.parent.mkdir(exist_ok=True, parents=True)
+    args.test_list.parent.mkdir(exist_ok=True, parents=True)
 
     e = next(args.source_dir.iterdir())
     f = list(map(lambda x: x.name[4:], e.glob("*.wav")))
