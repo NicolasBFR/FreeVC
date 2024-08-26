@@ -32,7 +32,7 @@ if __name__ == "__main__":
     for sample in train:
         train_e += list(args.source_dir.rglob(f"*{sample}"))
 
-    with open(args.train_list, "w") as f:
+    with open(args.train_list, "w+") as f:
         for fname in train_e:
             f.write(str(fname) + "\n")
     
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     for sample in test:
         test_e += list(args.source_dir.rglob(f"*{sample}"))
 
-    with open(args.test_list, "w") as f:
+    with open(args.test_list, "w+") as f:
         for fname in test_e:
             f.write(str(fname) + "\n")
     
@@ -48,6 +48,6 @@ if __name__ == "__main__":
     for sample in val:
         val_e += list(args.source_dir.rglob(f"*{sample}"))
 
-    with open(args.val_list, "w") as f:
+    with open(args.val_list, "w+") as f:
         for fname in val_e:
             f.write(str(fname) + "\n")
