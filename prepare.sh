@@ -1,4 +1,4 @@
-wget -nc -O dataset.zip "https://datashare.ed.ac.uk/bitstream/handle/10283/3443/VCTK-Corpus-0.92.zip?sequence=2&isAllowed=y" &
+wget -nc -O dataset.zip "https://datashare.ed.ac.uk/bitstream/handle/10283/3443/VCTK-Corpus-0.92.zip?sequence=2&isAllowed=y"
 wget -nc --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=12-cB34qCTvByWT-QtOcZaqwwO21FLSqU' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=12-cB34qCTvByWT-QtOcZaqwwO21FLSqU" -O wavlm/WavLM-Large.pt
 wait
 rm -rf /tmp/cookies.txt
