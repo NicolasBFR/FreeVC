@@ -41,7 +41,7 @@ Download the pretrained checkpoints and run:
 
 ```python
 # inference with FreeVC
-python3 convert.py --hpfile configs/freevc.json --ptfile checkpoints/freevc.pth --txtpath convert.txt --outdir outputs/freevc
+python3 convert.py --hpfile logs/freevc/config.json --ptfile logs/freevc/G_0.pth --txtpath convert.txt --outdir outputs/freevc
 ```
 
 ## Training Example
@@ -49,7 +49,7 @@ python3 convert.py --hpfile configs/freevc.json --ptfile checkpoints/freevc.pth 
 1. Preprocess
 
 ```python
-python3 downsample.py --in_dir </path/to/VCTK/wavs>
+python3 downsample.py
 
 # run this if you want a different train-val-test split
 python3 preprocess_flist.py
@@ -65,5 +65,5 @@ python3 preprocess_ssl.py
 
 ```python
 # train freevc
-python3 train.py -c configs/freevc.json -m freevc
+python3 train.py -c configs/freevc-nosr.json -m freevc
 ```

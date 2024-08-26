@@ -7,6 +7,7 @@ hifigan/generator_v1
 vctk_raw
 .idea
 *.pt
+*.old
 *_test.py
 *.zip
 filelists/*

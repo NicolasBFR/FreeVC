@@ -25,7 +25,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--sr", type=int, default=16000, help="sampling rate")
     parser.add_argument("--in_dir", type=str, default="dataset/vctk-16k", help="path to input dir")
-    parser.add_argument("--out_dir", type=str, default="dataset/wavlm", help="path to output dir")
+    parser.add_argument("--out_dir", type=str, default="dataset/vctk-16k", help="path to output dir")
     args = parser.parse_args()
     
     os.makedirs(args.out_dir, exist_ok=True)

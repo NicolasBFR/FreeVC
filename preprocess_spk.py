@@ -29,7 +29,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--in_dir', type=Path, default='dataset/vctk-16k/')
     parser.add_argument('--num_workers', type=int, default=cpu_count() - 2)
-    parser.add_argument('--out_dir_root', type=Path, default='dataset/spk')
+    parser.add_argument('--out_dir_root', type=Path, default='dataset/vctk-16k')
     parser.add_argument('--spk_encoder_ckpt', type=str,
                         default='speaker_encoder/ckpt/pretrained_bak_5805000.pt')
 
