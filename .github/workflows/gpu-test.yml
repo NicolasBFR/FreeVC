@@ -1,0 +1,12 @@
+name: End-to-end testing
+
+on: push
+
+jobs:
+  build-and-test:
+    runs-on: gpu
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: nvcc --version
+      - run: pip3 freeze
