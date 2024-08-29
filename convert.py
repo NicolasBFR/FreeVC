@@ -87,7 +87,8 @@ if __name__ == "__main__":
             else:
                 audio = net_g.infer(c, mel=mel_tgt)
             audio = audio[0][0].data.cpu().float().numpy()
-            print(time() - t)
+            t = time() - t
+            print(t)
             if args.use_timestamp:
                 timestamp = time.strftime("%m-%d_%H-%M", time.localtime())
                 write(os.path.join(args.outdir, "{}.wav".format(timestamp+"_"+title)), hps.data.sampling_rate, audio)
