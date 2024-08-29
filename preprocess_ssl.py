@@ -31,7 +31,7 @@ if __name__ == "__main__":
     os.makedirs(args.out_dir, exist_ok=True)
 
     print("Loading WavLM for content...")
-    checkpoint = torch.load('wavlm/WavLM-Large.pt')
+    checkpoint = torch.load('wavlm/WavLM-Large.pt', weights_only=False)
     cfg = WavLMConfig(checkpoint['cfg'])
     cmodel = WavLM(cfg).cuda()
     cmodel.load_state_dict(checkpoint['model'])

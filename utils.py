@@ -21,7 +21,7 @@ logger = logging
 
 
 def get_cmodel(rank):
-    checkpoint = torch.load('wavlm/WavLM-Large.pt')
+    checkpoint = torch.load('wavlm/WavLM-Large.pt', weights_only=False)
     cfg = WavLMConfig(checkpoint['cfg'])
     cmodel = WavLM(cfg).cuda(rank)
     cmodel.load_state_dict(checkpoint['model'])
@@ -41,7 +41,7 @@ def get_vocoder(rank):
         config = json.load(f)
     config = hifigan.AttrDict(config)
     vocoder = hifigan.Generator(config)
-    ckpt = torch.load("hifigan/generator_v1")
+    ckpt = torch.load("hifigan/generator_v1", weights_only=False)
     vocoder.load_state_dict(ckpt["generator"])
     vocoder.eval()
     vocoder.remove_weight_norm()
@@ -68,7 +68,7 @@ def stretch(mel, width): # 0.5-2
 
 def load_checkpoint(checkpoint_path, model, optimizer=None, strict=False):
   assert os.path.isfile(checkpoint_path)
-  checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
+  checkpoint_dict = torch.load(checkpoint_path, map_location='cpu', weights_only=False)
   iteration = checkpoint_dict['iteration']
   learning_rate = checkpoint_dict['learning_rate']
   if optimizer is not None:

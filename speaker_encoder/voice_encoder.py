@@ -36,7 +36,7 @@ class SpeakerEncoder(nn.Module):
         #                     weights_fpath)
 
         start = timer()
-        checkpoint = torch.load(weights_fpath, map_location="cpu")
+        checkpoint = torch.load(weights_fpath, map_location="cpu", weights_only=False)
 
         self.load_state_dict(checkpoint["model_state"], strict=False)
         self.to(device)

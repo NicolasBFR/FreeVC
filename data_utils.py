@@ -56,7 +56,7 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
         audio_norm = audio_norm.unsqueeze(0)
         spec_filename = filename.replace(".wav", ".spec.pt")
         if os.path.exists(spec_filename):
-            spec = torch.load(spec_filename)
+            spec = torch.load(spec_filename, weights_only=False)
         else:
             spec = spectrogram_torch(audio_norm, self.filter_length,
                 self.sampling_rate, self.hop_length, self.win_length,
@@ -72,7 +72,7 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
         if not self.use_sr:
             c_filename = filename.replace(".wav", ".pt")
             c_filename = c_filename.replace("DUMMY", "dataset/wavlm")
-            c = torch.load(c_filename).squeeze(0)
+            c = torch.load(c_filename, weights_only=False).squeeze(0)
         else:
             i = random.randint(68,92)
             '''
@@ -85,7 +85,7 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
             '''
             c_filename = filename.replace(".wav", f"_{i}.pt")
             c_filename = c_filename.replace("DUMMY", "dataset/sr/wavlm")
-            c = torch.load(c_filename).squeeze(0)
+            c = torch.load(c_filename, weights_only=False).squeeze(0)
             
         # 2023.01.10 update: code below can deteriorate model performance
         # I added these code during cleaning up, thinking that it can offer better performance than my provided checkpoints, but actually it does the opposite.
