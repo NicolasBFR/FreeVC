@@ -1,5 +1,5 @@
 useGPU:
-    image: pytorch/pytorch:latest
+    image: nvcr.io/nvidia/pytorch:24.08-py3
     stage: build
     tags:
         - saas-linux-medium-amd64-gpu-standard
