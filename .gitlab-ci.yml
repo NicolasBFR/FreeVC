@@ -16,5 +16,5 @@ useGPU:
         - echo "Check whether we have enabled our GPU or not."
         - python3 -c "import torch; print(torch.cuda.is_available())"
         - pip install -r requirements.txt
-        - wget -nc -O dataset.zip "https://pers.creativec.eu/VCTK-Corpus-sample.zip"
+        - wget -nc -O dataset.zip "https://pers.creativec.eu/VCTK-Corpus-sample.zip" || [[ $? -eq 1 ]]
         - ./prepare.sh
