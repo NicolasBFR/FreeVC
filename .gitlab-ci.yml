@@ -18,3 +18,4 @@ useGPU:
         - pip install -r requirements.txt
         - wget -nc -O dataset.zip "https://pers.creativec.eu/VCTK-Corpus-sample.zip" || [[ $? -eq 1 ]]
         - ./prepare.sh
+        - time python3 convert.py --hpfile logs/freevc/config.json --ptfile logs/freevc/G_0.pth --txtpath convert.txt --outdir outputs/freevc
