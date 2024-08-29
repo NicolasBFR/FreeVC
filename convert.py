@@ -5,6 +5,7 @@ import librosa
 import time
 from scipy.io.wavfile import write
 from tqdm import tqdm
+from time import time
 
 import utils
 from models import SynthesizerTrn
@@ -75,6 +76,8 @@ if __name__ == "__main__":
                     hps.data.mel_fmax
                 )
             # src
+            print(title)
+            t = time()
             wav_src, _ = librosa.load(src, sr=hps.data.sampling_rate)
             wav_src = torch.from_numpy(wav_src).unsqueeze(0).cuda()
             c = utils.get_content(cmodel, wav_src)
@@ -84,6 +87,7 @@ if __name__ == "__main__":
             else:
                 audio = net_g.infer(c, mel=mel_tgt)
             audio = audio[0][0].data.cpu().float().numpy()
+            print(time() - t)
             if args.use_timestamp:
                 timestamp = time.strftime("%m-%d_%H-%M", time.localtime())
                 write(os.path.join(args.outdir, "{}.wav".format(timestamp+"_"+title)), hps.data.sampling_rate, audio)
