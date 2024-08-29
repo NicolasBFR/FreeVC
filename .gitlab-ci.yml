@@ -1,7 +1,10 @@
 useGPU:
     image: pytorch/pytorch:latest
     stage: build
+    tags:
+        - saas-linux-medium-amd64-gpu-standard
     script:
         - echo "Check whether we have enabled our GPU or not."
         - nvidia-smi
+        - nvcc --version
         - python3 -c "import torch; print(torch.cuda.is_available())"
