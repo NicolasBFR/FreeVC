@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import Conv1d, ConvTranspose1d
-from torch.nn.utils import weight_norm, remove_weight_norm
+from torch.nn.utils.parametrizations import weight_norm
+from torch.nn.utils import remove_weight_norm
 
 LRELU_SLOPE = 0.1
 
