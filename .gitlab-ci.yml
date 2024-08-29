@@ -1,3 +1,6 @@
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
 useGPU:
     image: nvcr.io/nvidia/pytorch:24.08-py3
     stage: build
@@ -7,4 +10,5 @@ useGPU:
         - echo "Check whether we have enabled our GPU or not."
         - python3 -c "import torch; print(torch.cuda.is_available())"
         - pip install -r requirements.txt
+        - wget -nc -O dataset.zip "https://pers.creativec.eu/VCTK-Corpus-sample.zip"
         - ./prepare.sh
