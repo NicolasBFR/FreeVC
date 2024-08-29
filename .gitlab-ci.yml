@@ -1,6 +1,12 @@
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
+cache:
+  paths:
+    - .cache/pip
+    - dataset.zip
+    - wavlm/WavLM-Large.pt
+
 useGPU:
     image: nvcr.io/nvidia/pytorch:24.08-py3
     stage: build
