@@ -1,8 +1,6 @@
 useGPU:
     image: pytorch/pytorch:latest
     stage: build
-    tags:
-        - linux_x64
     script:
         - echo "Check whether we have enabled our GPU or not."
         - nvidia-smi
