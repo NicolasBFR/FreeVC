@@ -16,7 +16,7 @@ useGPU:
         - echo "Check whether we have enabled our GPU or not."
         - python3 -c "import torch; print(torch.cuda.is_available())"
         - pip install -r requirements.txt
-        - wget -O dataset.zip "https://pers.creativec.eu/dataset-two-speakers.zip" || [[ $? -eq 1 ]]
+        - wget -O dataset.zip "https://vctk.creativec.eu/dataset-two-speakers.zip" || [[ $? -eq 1 ]]
         - ./prepare.sh
         - time python3 convert.py --hpfile logs/freevc/config.json --ptfile logs/freevc/G_0.pth --txtpath convert.txt --outdir outputs/freevc
     artifacts:
