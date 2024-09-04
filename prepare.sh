@@ -1,11 +1,11 @@
-wget -nc -O dataset.zip "https://datashare.ed.ac.uk/bitstream/handle/10283/3443/VCTK-Corpus-0.92.zip?sequence=2&isAllowed=y";
+wget -nc -O dataset.zip "https://vctk.creativec.eu/dataset-two-speakers.zip";
 gdown 12-cB34qCTvByWT-QtOcZaqwwO21FLSqU -O wavlm/WavLM-Large.pt;
 wait;
 rm -rf /tmp/cookies.txt;
-python3 downsample.py --in_zip dataset.zip;
+python3 downsample.py --in_zip dataset.zip --sr 24000;
 #rm dataset.zip;
 python3 preprocess_flist.py;
-python3 preprocess_spk.py --num_workers=4;
+python3 preprocess_spk.py --num_workers=10;
 python3 preprocess_ssl.py;
-python3 train.py -c configs/freevc-nosr.json -m freevc;
+python3 train.py -c configs/freevc-nosr-24k.json -m freevc;
 python3 convert.py --hpfile logs/freevc/config.json --ptfile logs/freevc/G_0.pth --txtpath convert.txt --outdir outputs/freevc;
