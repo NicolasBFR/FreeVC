@@ -6,6 +6,6 @@ python3 downsample.py --in_zip dataset.zip --sr 24000;
 #rm dataset.zip;
 python3 preprocess_flist.py;
 python3 preprocess_spk.py --num_workers=10;
-python3 preprocess_ssl.py;
+python3 preprocess_ssl.py --sr 24000;
 python3 train.py -c configs/freevc-nosr-24k.json -m freevc;
 python3 convert.py --hpfile logs/freevc/config.json --ptfile logs/freevc/G_0.pth --txtpath convert.txt --outdir outputs/freevc;
