@@ -1,7 +1,6 @@
 wget -nc -O dataset.zip "https://vctk.creativec.eu/dataset-two-speakers.zip";
 gdown 12-cB34qCTvByWT-QtOcZaqwwO21FLSqU -O wavlm/WavLM-Large.pt;
 wait;
-rm -rf /tmp/cookies.txt;
 python3 downsample.py --in_zip dataset.zip --sr 24000;
 #rm dataset.zip;
 python3 preprocess_flist.py;
